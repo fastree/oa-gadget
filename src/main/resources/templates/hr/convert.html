@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>企业管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">上传加班清单</div>
+                <div class="layui-card-body">
+                    <div class="layui-upload-drag" id="upload-overtime">
+                        <i class="layui-icon"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <a href="#" class="layui-btn layui-btn-disabled" id="download-overtime">下载加班清单</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">上传请假清单</div>
+                <div class="layui-card-body">
+                    <div class="layui-upload-drag" id="upload-leave">
+                        <i class="layui-icon"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <a href="#" class="layui-btn layui-btn-disabled" id="download-leave">下载请假清单</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.config({
+        base: /*[[@{/layuiadmin/}]]*/ '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'console', 'upload'], function () {
+        var $ = layui.jquery
+        ,upload = layui.upload
+        ,layer = layui.layer
+
+        upload.render({
+            elem: '#upload-overtime'
+            ,url: /*[[@{/gadget/overtime}]]*/ '/upload/'
+            ,method: 'post'
+            ,accept: 'file'
+            ,exts: 'xls|xlsx'
+            ,field: 'file'
+            ,size: 1024*8
+            ,multiple: false
+            ,drag: true
+            ,done: function(res){
+                console.log(res)
+                if (res.code == 200) {
+                    layer.msg(res.msg);
+                }
+                $('#download-overtime').attr("href", res.data.action + res.data.filename);
+                $('#download-overtime').removeClass("layui-btn-disabled")
+            }
+        });
+
+        upload.render({
+            elem: '#upload-leave'
+            ,url: /*[[@{/gadget/leave}]]*/ '/upload/'
+            ,method: 'post'
+            ,accept: 'file'
+            ,exts: 'xls|xlsx'
+            ,field: 'file'
+            ,size: 1024*8
+            ,multiple: false
+            ,drag: true
+            ,done: function(res){
+                console.log(res)
+                if (res.code == 200) {
+                    layer.msg(res.msg);
+                }
+                $('#download-leave').attr("href", res.data.action + res.data.filename);
+                $('#download-leave').removeClass("layui-btn-disabled")
+            }
+        });
+    });
+</script>
+</body>
+</html>
+
